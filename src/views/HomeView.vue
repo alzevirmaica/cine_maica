@@ -143,6 +143,8 @@
 
 #genres {
   border-radius: 4px;
+  max-width: 100px;
+  width: 100%;
 }
 .form__submit:hover {
   background-color: #c70913;
