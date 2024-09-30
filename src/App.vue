@@ -63,10 +63,9 @@ header nav a {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  width: 100%;
-    width: 100%; /* Garante que o app ocupe 100% da largura */
-  max-width: 1200px; /* Opcional: define uma largura máxima */
-  margin: 0 auto; /* Centraliza o conteúdo */
+  width: 100%; 
+  max-width: 1200px; 
+  margin: 0 auto; 
   padding: 20px;
 }
 </style>

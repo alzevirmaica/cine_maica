@@ -1,5 +1,20 @@
 <script setup lang="ts">
+import ShowFilm from '@/components/ShowFilm.vue';
+import { useMovieStore } from '@/stores/MovieStore';
+import { ref } from 'vue';
 
+
+
+const movieStore = useMovieStore()
+const searchQuery = ref('')
+const showResults = ref(false); 
+
+
+const handleSearch = () => {
+  movieStore.state.searchMovie = searchQuery.value
+  movieStore.searchMovie()
+  showResults.value = true; 
+}
 </script>
 
 <template>
@@ -12,52 +27,25 @@
     <section class="section-movies">
       <div class="container">
         <div v-if="!showResults" class="app-movies">
-          <h2 class="app-movies__title">
-            Filmes, séries e muito mais. Sem limites.
-          </h2>
+          <h2 class="app-movies__title">Filmes, séries e muito mais. Sem limites.</h2>
 
           <div class="form">
-            <input
-              v-model="searchMovie"
-              v-on:keyup.enter="searchMovies"
-              type="text"
-              placeholder="Buscar filme"
-              name="movie"
-              class="form__input"
-            />
-            <select name="genres" id="genres" v-model="searchGenres">
+            <input  v-model="searchQuery" type="text" placeholder="Buscar filme" name="movie" class="form__input" />
+            <select name="genres" id="genres">
               <option value="" selected disabled>Gênero</option>
-              <option v-for="genre in genres" :value="genre.id" :key="genre.id">
-                {{ genre.name }}
-              </option>
             </select>
-            <input
-              @click="search"
-              type="submit"
-              class="form__submit"
-              value="Buscar"
-            />
+            <input type="submit" class="form__submit" value="Buscar" @click.prevent="handleSearch" />
           </div>
         </div>
-        <show-film
-          v-else-if="!selectedMovie"
-          :movies="movies"
-          :selectedMovie="selectedMovie"
-          @show-details="showMovieDetails"
-        />
+        <show-film />
       </div>
     </section>
 
-    <movie-details
-      v-if="selectedMovie"
-      :movie="selectedMovie"
-      @details-click="onDetailsClick"
-    />
   </div>
-</template>
+</template> 
 
 <style scoped>
-  .header-movies {
+.header-movies {
   float: left;
   position: relative;
   padding: 15px 0;
@@ -67,7 +55,7 @@
 
 .header-movies__title {
   color: red;
-  font-family: "arial", sans-serif;
+  font-family: 'arial', sans-serif;
   font-size: 40px;
   text-shadow: 2px 2px #000000;
 }
@@ -97,14 +85,14 @@
 }
 .app-movies__title {
   color: white;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 54px;
   max-width: 70%;
   text-align: center;
 }
 .app-movies__subtitle {
   color: white;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 25px;
   font-weight: 300;
   margin: 20px 0 30px;
@@ -112,7 +100,7 @@
 .app-movies__msg {
   color: white;
   font-size: 18px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   margin-bottom: 20px;
 }
 
@@ -211,21 +199,8 @@
 
 .movie-details {
   position: relative;
-  /* .movie-card {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    padding: 10px;
-    margin: 10px;
-    max-width: 600px;
-    height: 600px;
-    transition: all 0.2s ease-in-out;
-    z-index: 9;
-    box-shadow: 0 0px 9px 3px rgb(255, 255, 255, 0.23);
-    background-color: #141414;
-    overflow: auto;
-  } */
 }
+
 .movie-image {
   width: 60%;
   height: 60%;
