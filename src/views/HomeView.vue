@@ -1,19 +1,25 @@
 <script setup lang="ts">
-import ShowFilm from '@/components/ShowFilm.vue';
-import { useMovieStore } from '@/stores/MovieStore';
-import { ref } from 'vue';
-
-
+import MovieDetails from '@/components/MovieDetails.vue'
+import ShowFilm from '@/components/ShowFilm.vue'
+import { useMovieStore } from '@/stores/MovieStore'
+import { onMounted, ref } from 'vue'
 
 const movieStore = useMovieStore()
 const searchQuery = ref('')
-const showResults = ref(false); 
+const showResults = ref(false)
+const selectedGenre = ref('')
 
+
+onMounted(() => {
+  movieStore.getGenres(); 
+});
 
 const handleSearch = () => {
   movieStore.state.searchMovie = searchQuery.value
+  movieStore.state.searchGenres = selectedGenre.value; // Atualiza o estado com o gênero selecionado
   movieStore.searchMovie()
-  showResults.value = true; 
+  movieStore.searchGenre() 
+  showResults.value = true
 }
 </script>
 
@@ -30,17 +36,31 @@ const handleSearch = () => {
           <h2 class="app-movies__title">Filmes, séries e muito mais. Sem limites.</h2>
 
           <div class="form">
-            <input  v-model="searchQuery" type="text" placeholder="Buscar filme" name="movie" class="form__input" />
-            <select name="genres" id="genres">
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Buscar filme"
+              name="movie"
+              class="form__input"
+            />
+            <select v-model="selectedGenre" name="genres" id="genres">
               <option value="" selected disabled>Gênero</option>
+              <option v-for="genre in movieStore.state.genres" :key="genre.id" :value="genre.id">
+                {{ genre.name }}
+              </option>
             </select>
-            <input type="submit" class="form__submit" value="Buscar" @click.prevent="handleSearch" />
+            <input
+              type="submit"
+              class="form__submit"
+              value="Buscar"
+              @click.prevent="handleSearch"
+            />
           </div>
         </div>
         <show-film />
       </div>
     </section>
-
+    <MovieDetails />
   </div>
 </template> 
 

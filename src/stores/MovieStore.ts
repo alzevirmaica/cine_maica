@@ -7,7 +7,10 @@ import { reactive } from 'vue'
 export const useMovieStore = defineStore('movieStore', () => {
   const state = reactive<IMovieStoreState>({
     movies: [],
-    searchMovie: ''
+    genres: [],
+    searchMovie: '',
+    searchGenres: '',
+    showResults: false
   })
 
   const searchMovie = () => {
@@ -18,14 +21,66 @@ export const useMovieStore = defineStore('movieStore', () => {
           Authorization: `Bearer ${API_token}`
         }
       })
+      // .then((response) => {
+      //   (state.searchMovie = ""), (state.showResults = true);
+      //   state.movies = response.data.results.filter((movie: { genre_ids: string | string[] }) => {
+      //     if (state.searchGenres !== "") {
+      //       return movie.genre_ids.includes(state.searchGenres);
+      //     } else {
+      //       return movie;
+      //     }
+      //   });
+      // })
       .then((response) => {
-        state.searchMovie = ''
-        state.movies = response.data.results
+        state.showResults = true;
+        const allMovies = response.data.results;
+  
+        // Filtra os filmes com base no gênero selecionado, se houver
+        if (state.searchGenres) {
+          state.movies = allMovies.filter((movie: { genre_ids: string | string[] }) =>
+            movie.genre_ids.includes(state.searchGenres)
+          );
+        } else {
+          state.movies = allMovies; // Se não houver gênero, retorna todos os filmes
+        }
+  
+        // Limpa os campos de busca
+        state.searchMovie = '';
+        state.searchGenres = ''; // Opcional, mas pode ser bom limpar o gênero selecionado
       })
+  }
+
+  const getGenres = async () => {
+    try {
+      const response = await axios.get(`https://api.themoviedb.org/3/genre/movie/list?language=pt-BR`, {
+        headers: {
+          Authorization: `Bearer ${API_token}`,
+        },
+      });
+      state.genres = response.data.genres; // Armazenando os gêneros na store
+    } catch (error) {
+      console.error('Error fetching genres:', error);
+    }
+  };
+
+  const searchGenre =() => {
+    const apiUrlGenre = `https://api.themoviedb.org/3/discover/movie?with_genres=${state.searchGenres}&include_adult=false&language=pt-BR`;
+    axios
+      .get(apiUrlGenre, {
+        headers: {
+          Authorization: `Bearer ${API_token}`,
+        },
+      })
+      .then((response) => {
+        (state.searchGenres = ""), (state.showResults = true);
+        state.movies = response.data.results;
+      });
   }
 
   return {
     state,
-    searchMovie
+    searchMovie,
+    getGenres,
+    searchGenre
   }
 })

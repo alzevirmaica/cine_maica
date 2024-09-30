@@ -1,44 +1,63 @@
 <script setup lang="ts">
-import { useMovieStore } from '@/stores/MovieStore'
-import { computed } from 'vue'
 
-const movieStore = useMovieStore()
-const movies = computed(() => movieStore.state.movies) // Computa os filmes da store
-
-const extractYear = (dateString: string): string => {
-  return dateString.split('-')[0]
-}
 </script>
 
 <template>
-  <div class="movies">
-    <div :key="index" v-for="(movie, index) in movies" class="card">
-      <img
-        :src="'https://image.tmdb.org/t/p/w500/' + movie.poster_path"
-        alt="Poster"
-        class="card-image"
-      />
-      <div>
-        <h2 class="card-title" style="color: white">{{ movie.title }}</h2>
-        <p style="color: white">{{ extractYear(movie.release_date) }}</p>
-        <p style="color: white">
-          <img
-            class="card-icon"
-            src="../../../public/img/estrela.png"
-            alt="ícone de estrela"
-            height="15px"
-          />
-          {{ movie.vote_average.toFixed(1) }}
-        </p>
-      </div>
-    </div>
+  <div>
+    
   </div>
 </template>
 
 <style scoped>
-
 .movies {
   position: relative;
   z-index: 2;
+}
+.movie-details {
+  position: relative;
+}
+.movie-card {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 10px;
+  margin: 10px;
+  max-width: 600px;
+  height: 600px;
+  transition: all 0.2s ease-in-out;
+  z-index: 9;
+  box-shadow: 0 0px 9px 3px rgb(255, 255, 255, 0.23);
+  background-color: #141414;
+  overflow: auto;
+}
+
+.movie-image {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
+}
+
+.movie-title {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: white;
+}
+
+.movie-overview {
+  font-size: 1.1em;
+  text-align: center;
+}
+
+.movie-line {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  justify-items: center;
+  text-align: center;
+}
+
+.movie-card:hover {
+  transform: scale(1.3);
+  z-index: 99;
 }
 </style>
