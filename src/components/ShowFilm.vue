@@ -9,6 +9,10 @@ const movies = computed(() => movieStore.state.movies);
 const extractYear = (dateString: string): string => {
   return dateString.split("-")[0];
 }
+
+const toggleFavorite = (movie: any) => {
+  movieStore.toggleFavorite(movie);
+};
 </script>
 
 <template>
@@ -29,14 +33,14 @@ const extractYear = (dateString: string): string => {
         <p style="color: white">
           <img
             class="card-icon"
-            src="../../../public/img/estrela.png"
+            src="../../public/img/estrela.png"
             alt="ícone de estrela"
             height="15px"
           />
           {{ movie.vote_average.toFixed(1) }}
         </p>
-        <button>
-          <span>Adiconar aos favoritos</span>
+        <button  @click="toggleFavorite(movie)">
+          {{ movieStore.state.favoritesMovies.some(fav => fav.id === movie.id) ? 'Remover dos Favoritos' : 'Adicionar aos Favoritos' }}
         </button>
       </div>
     </div>

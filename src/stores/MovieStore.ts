@@ -1,16 +1,18 @@
 import { API_token } from '@/config/key'
+import type { IMovie } from '@/interfaces/IMovies'
 import type { IMovieStoreState } from '@/interfaces/IMovieStoreState'
 import axios from 'axios'
 import { defineStore } from 'pinia'
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
 
 export const useMovieStore = defineStore('movieStore', () => {
   const state = reactive<IMovieStoreState>({
     movies: [],
     genres: [],
+    favoritesMovies: JSON.parse(localStorage.getItem('favoriteMovies') || '[]'), // Carrega os filmes favoritos do localStorage
     searchMovie: '',
     searchGenres: '',
-    showResults: false
+    showResults: false,
   })
 
   const searchMovie = () => {
@@ -21,16 +23,6 @@ export const useMovieStore = defineStore('movieStore', () => {
           Authorization: `Bearer ${API_token}`
         }
       })
-      // .then((response) => {
-      //   (state.searchMovie = ""), (state.showResults = true);
-      //   state.movies = response.data.results.filter((movie: { genre_ids: string | string[] }) => {
-      //     if (state.searchGenres !== "") {
-      //       return movie.genre_ids.includes(state.searchGenres);
-      //     } else {
-      //       return movie;
-      //     }
-      //   });
-      // })
       .then((response) => {
         state.showResults = true;
         const allMovies = response.data.results;
@@ -77,10 +69,32 @@ export const useMovieStore = defineStore('movieStore', () => {
       });
   }
 
+  const toggleFavorite = (movie: IMovie) => {
+    const index = state.favoritesMovies.findIndex(favorite => favorite.id === movie.id);
+    if (index !== -1) {
+      // Remove o filme se já estiver nos favoritos
+      state.favoritesMovies.splice(index, 1);
+    } else {
+      // Adiciona o filme aos favoritos
+      state.favoritesMovies.push(movie);
+    }
+
+    saveFavorites(); // Salva no localStorage
+  };
+
+
+  const saveFavorites = () => {
+    localStorage.setItem('favoriteMovies', JSON.stringify(state.favoritesMovies)); // Persistindo os favoritos
+  }
+
+   // Watch para persistir os favoritos sempre que houver uma alteração
+   watch(() => state.favoritesMovies, saveFavorites);
+
   return {
     state,
     searchMovie,
     getGenres,
-    searchGenre
+    searchGenre,
+    toggleFavorite
   }
 })
