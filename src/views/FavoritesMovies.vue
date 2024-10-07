@@ -23,7 +23,7 @@
           />
           {{ movie.vote_average.toFixed(1) }}
         </p>
-        <button @click="removeFromFavorites(movie)">
+        <button class="remove-favorites" @click="removeFromFavorites(movie)">
           <span>Remover dos favoritos</span>
         </button>
       </div>
@@ -33,19 +33,16 @@
 </template>
 
 <script setup lang="ts">
-import { useMovieStore } from '@/stores/MovieStore'
+import { useMovieStore } from '../stores/MovieStore'
 import { computed } from 'vue';
+import { extractYear } from '../composables/extractYear';
+import type { IMovie } from '../interfaces/IMovies';
 
 const movieStore = useMovieStore();
 const favoriteMovies = computed(() => movieStore.state.favoritesMovies);
 
-const removeFromFavorites = (movie: any) => {
+function removeFromFavorites(movie: IMovie) {
   movieStore.toggleFavorite(movie);
-}
-
-
-const extractYear = (dateString: string): string => {
-  return dateString.split("-")[0];
 }
 </script>
 
@@ -98,5 +95,18 @@ p {
   transform: scale(1.3);
   z-index: 99;
   cursor: pointer;
+}
+
+.remove-favorites {
+  cursor: pointer;
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #fff;
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.remove-favorites:hover {
+  background-color: darkgrey;
 }
 </style>

@@ -1,16 +1,20 @@
 <script setup lang="ts">
-import { useMovieStore } from '@/stores/MovieStore';
-import { computed } from 'vue';
+import { useMovieStore } from '../stores/MovieStore';
+import { computed, defineEmits } from 'vue';
+import { extractYear } from '../composables/extractYear';
+import type { IMovie } from '../interfaces/IMovies';
 
 const movieStore = useMovieStore();
 const movies = computed(() => movieStore.state.movies);
+const emit = defineEmits<{ 
+  (event: 'show-details', movie: IMovie): void 
+}>();
 
+function showMovieDetails(movie: IMovie) {
+  emit('show-details', movie); 
+};
 
-const extractYear = (dateString: string): string => {
-  return dateString.split("-")[0];
-}
-
-const toggleFavorite = (movie: any) => {
+function toggleFavorite (movie: IMovie) {
   movieStore.toggleFavorite(movie);
 };
 </script>
@@ -23,6 +27,7 @@ const toggleFavorite = (movie: any) => {
       class="card"
     >
       <img
+        @click="showMovieDetails(movie)"
         :src="'https://image.tmdb.org/t/p/w500/' + movie.poster_path"
         alt="Poster"
         class="card-image"
@@ -39,7 +44,7 @@ const toggleFavorite = (movie: any) => {
           />
           {{ movie.vote_average.toFixed(1) }}
         </p>
-        <button  @click="toggleFavorite(movie)">
+        <button class="card-favorites"  @click="toggleFavorite(movie)">
           {{ movieStore.state.favoritesMovies.some(fav => fav.id === movie.id) ? 'Remover dos Favoritos' : 'Adicionar aos Favoritos' }}
         </button>
       </div>
@@ -79,12 +84,25 @@ const toggleFavorite = (movie: any) => {
     width: 150px;
     height: auto;
     margin-right: 20px;
+    cursor: pointer;
 }
 
 .card-title {
     font-size: 1.2em;
     font-weight: bold;
     color: white;
+}
+
+.card-favorites {
+  cursor: pointer;
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #fff;
+  border-radius: 4px;
+}
+
+.card-favorites:hover {
+  background-color: darkgrey;
 }
 
 p {
@@ -96,7 +114,6 @@ p {
 .card:hover {
   transform: scale(1.3);
   z-index: 99;
-  cursor: pointer;
 }
 
 </style>

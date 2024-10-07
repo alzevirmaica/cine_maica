@@ -9,7 +9,7 @@ export const useMovieStore = defineStore('movieStore', () => {
   const state = reactive<IMovieStoreState>({
     movies: [],
     genres: [],
-    favoritesMovies: JSON.parse(localStorage.getItem('favoriteMovies') || '[]'), // Carrega os filmes favoritos do localStorage
+    favoritesMovies: JSON.parse(localStorage.getItem('favoriteMovies') || '[]'),
     searchMovie: '',
     searchGenres: '',
     showResults: false,
@@ -27,18 +27,16 @@ export const useMovieStore = defineStore('movieStore', () => {
         state.showResults = true;
         const allMovies = response.data.results;
   
-        // Filtra os filmes com base no gênero selecionado, se houver
         if (state.searchGenres) {
           state.movies = allMovies.filter((movie: { genre_ids: string | string[] }) =>
             movie.genre_ids.includes(state.searchGenres)
           );
         } else {
-          state.movies = allMovies; // Se não houver gênero, retorna todos os filmes
+          state.movies = allMovies;
         }
   
-        // Limpa os campos de busca
         state.searchMovie = '';
-        state.searchGenres = ''; // Opcional, mas pode ser bom limpar o gênero selecionado
+        state.searchGenres = ''; 
       })
   }
 
@@ -49,7 +47,7 @@ export const useMovieStore = defineStore('movieStore', () => {
           Authorization: `Bearer ${API_token}`,
         },
       });
-      state.genres = response.data.genres; // Armazenando os gêneros na store
+      state.genres = response.data.genres;
     } catch (error) {
       console.error('Error fetching genres:', error);
     }
@@ -72,22 +70,19 @@ export const useMovieStore = defineStore('movieStore', () => {
   const toggleFavorite = (movie: IMovie) => {
     const index = state.favoritesMovies.findIndex(favorite => favorite.id === movie.id);
     if (index !== -1) {
-      // Remove o filme se já estiver nos favoritos
       state.favoritesMovies.splice(index, 1);
     } else {
-      // Adiciona o filme aos favoritos
       state.favoritesMovies.push(movie);
     }
 
-    saveFavorites(); // Salva no localStorage
+    saveFavorites(); 
   };
 
 
   const saveFavorites = () => {
-    localStorage.setItem('favoriteMovies', JSON.stringify(state.favoritesMovies)); // Persistindo os favoritos
+    localStorage.setItem('favoriteMovies', JSON.stringify(state.favoritesMovies)); 
   }
 
-   // Watch para persistir os favoritos sempre que houver uma alteração
    watch(() => state.favoritesMovies, saveFavorites);
 
   return {

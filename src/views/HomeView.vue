@@ -1,25 +1,30 @@
 <script setup lang="ts">
 import MovieDetails from '@/components/MovieDetails.vue'
 import ShowFilm from '@/components/ShowFilm.vue'
-import { useMovieStore } from '@/stores/MovieStore'
+import { useMovieStore } from '../stores/MovieStore'
 import { onMounted, ref } from 'vue'
+import type { IMovie } from '../interfaces/IMovies'
 
 const movieStore = useMovieStore()
 const searchQuery = ref('')
 const showResults = ref(false)
 const selectedGenre = ref('')
-
+let selectedMovie = ref<IMovie | null>(null) 
 
 onMounted(() => {
-  movieStore.getGenres(); 
-});
+  movieStore.getGenres()
+})
 
-const handleSearch = () => {
+function handleSearch() {
   movieStore.state.searchMovie = searchQuery.value
-  movieStore.state.searchGenres = selectedGenre.value; // Atualiza o estado com o gênero selecionado
+  movieStore.state.searchGenres = selectedGenre.value
   movieStore.searchMovie()
-  movieStore.searchGenre() 
+  movieStore.searchGenre()
   showResults.value = true
+}
+
+function showMovieDetails(movie: IMovie) {
+  selectedMovie.value = movie
 }
 </script>
 
@@ -57,10 +62,10 @@ const handleSearch = () => {
             />
           </div>
         </div>
-        <show-film />
+        <show-film v-else-if="!selectedMovie" @show-details="showMovieDetails" />
       </div>
     </section>
-    <MovieDetails />
+    <MovieDetails v-if="selectedMovie" :movie="selectedMovie" />
   </div>
 </template> 
 
