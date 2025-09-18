@@ -9,7 +9,7 @@ const movieStore = useMovieStore()
 const searchQuery = ref('')
 const showResults = ref(false)
 const selectedGenre = ref('')
-let selectedMovie = ref<IMovie | null>(null) 
+let selectedMovie = ref<IMovie | null>(null)
 
 onMounted(() => {
   movieStore.getGenres()
@@ -32,7 +32,7 @@ function showMovieDetails(movie: IMovie) {
   <div id="bestMovies">
     <header class="header-movies">
       <div class="container">
-        <h1 class="header-movies__title">CineBagual</h1>
+        <h1 class="header-movies__title">CineMaica</h1>
       </div>
     </header>
     <section class="section-movies">
@@ -67,7 +67,7 @@ function showMovieDetails(movie: IMovie) {
     </section>
     <MovieDetails v-if="selectedMovie" :movie="selectedMovie" />
   </div>
-</template> 
+</template>
 
 <style scoped>
 .header-movies {
