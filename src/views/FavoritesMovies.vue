@@ -1,48 +1,40 @@
 <template>
- <div>
-  <div class="movies">
-    <p style="color: beige;" v-if="favoriteMovies.length === 0">Nenhum filme favorito ainda.</p>
-    <div
-      v-for="movie in favoriteMovies" :key="movie.id"
-      class="card"
-    >
-      <img
-        :src="'https://image.tmdb.org/t/p/w500/' + movie.poster_path"
-        alt="Poster"
-        class="card-image"
-      />
-      <div>
-        <h2 class="card-title" style="color: white">{{ movie.title }}</h2>
-        <p style="color: white">{{ extractYear(movie.release_date) }}</p>
-        <p style="color: white">
-          <img
-            class="card-icon"
-            src="../../../public/img/estrela.png"
-            alt="ícone de estrela"
-            height="15px"
-          />
-          {{ movie.vote_average.toFixed(1) }}
-        </p>
-        <button class="remove-favorites" @click="removeFromFavorites(movie)">
-          <span>Remover dos favoritos</span>
-        </button>
+  <div>
+    <div class="movies">
+      <p style="color: beige" v-if="favoriteMovies.length === 0">Nenhum filme favorito ainda.</p>
+      <div v-for="movie in favoriteMovies" :key="movie.id" class="card">
+        <img
+          :src="'https://image.tmdb.org/t/p/w500/' + movie.poster_path"
+          alt="Poster"
+          class="card-image"
+        />
+        <div>
+          <h2 class="card-title" style="color: white">{{ movie.title }}</h2>
+          <p style="color: white">{{ extractYear(movie.release_date) }}</p>
+          <p style="color: white">
+            <img class="card-icon" src="/img/estrela.png" alt="ícone de estrela" height="15px" />
+            {{ movie.vote_average.toFixed(1) }}
+          </p>
+          <button class="remove-favorites" @click="removeFromFavorites(movie)">
+            <span>Remover dos favoritos</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
- </div>
 </template>
 
 <script setup lang="ts">
 import { useMovieStore } from '../stores/MovieStore'
-import { computed } from 'vue';
-import { extractYear } from '../composables/extractYear';
-import type { IMovie } from '../interfaces/IMovies';
+import { computed } from 'vue'
+import { extractYear } from '../composables/extractYear'
+import type { IMovie } from '../interfaces/IMovies'
 
-const movieStore = useMovieStore();
-const favoriteMovies = computed(() => movieStore.state.favoritesMovies);
+const movieStore = useMovieStore()
+const favoriteMovies = computed(() => movieStore.state.favoritesMovies)
 
 function removeFromFavorites(movie: IMovie) {
-  movieStore.toggleFavorite(movie);
+  movieStore.toggleFavorite(movie)
 }
 </script>
 
@@ -74,21 +66,21 @@ function removeFromFavorites(movie: IMovie) {
   background-color: #141414;
 }
 .card-image {
-    width: 150px;
-    height: auto;
-    margin-right: 20px;
+  width: 150px;
+  height: auto;
+  margin-right: 20px;
 }
 
 .card-title {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: white;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: white;
 }
 
 p {
-    display: flex;
-    align-self: center;
-    gap: 4px;
+  display: flex;
+  align-self: center;
+  gap: 4px;
 }
 
 .card:hover {
