@@ -1,31 +1,27 @@
 <script setup lang="ts">
-import { useMovieStore } from '../stores/MovieStore';
-import { computed, defineEmits } from 'vue';
-import { extractYear } from '../composables/extractYear';
-import type { IMovie } from '../interfaces/IMovies';
+import { useMovieStore } from '../stores/MovieStore'
+import { computed, defineEmits } from 'vue'
+import { extractYear } from '../composables/extractYear'
+import type { IMovie } from '../interfaces/IMovies'
 
-const movieStore = useMovieStore();
-const movies = computed(() => movieStore.state.movies);
-const emit = defineEmits<{ 
-  (event: 'show-details', movie: IMovie): void 
-}>();
+const movieStore = useMovieStore()
+const movies = computed(() => movieStore.state.movies)
+const emit = defineEmits<{
+  (event: 'show-details', movie: IMovie): void
+}>()
 
 function showMovieDetails(movie: IMovie) {
-  emit('show-details', movie); 
-};
+  emit('show-details', movie)
+}
 
-function toggleFavorite (movie: IMovie) {
-  movieStore.toggleFavorite(movie);
-};
+function toggleFavorite(movie: IMovie) {
+  movieStore.toggleFavorite(movie)
+}
 </script>
 
 <template>
-    <div class="movies">
-    <div
-      :key="index"
-      v-for="(movie, index) in movies"
-      class="card"
-    >
+  <div class="movies">
+    <div :key="index" v-for="(movie, index) in movies" class="card">
       <img
         @click="showMovieDetails(movie)"
         :src="'https://image.tmdb.org/t/p/w500/' + movie.poster_path"
@@ -36,16 +32,15 @@ function toggleFavorite (movie: IMovie) {
         <h2 class="card-title" style="color: white">{{ movie.title }}</h2>
         <p style="color: white">{{ extractYear(movie.release_date) }}</p>
         <p style="color: white">
-          <img
-            class="card-icon"
-            src="../../public/img/estrela.png"
-            alt="ícone de estrela"
-            height="15px"
-          />
+          <img class="card-icon" src="/img/estrela.png" alt="ícone de estrela" height="15px" />
           {{ movie.vote_average.toFixed(1) }}
         </p>
-        <button class="card-favorites"  @click="toggleFavorite(movie)">
-          {{ movieStore.state.favoritesMovies.some(fav => fav.id === movie.id) ? 'Remover dos Favoritos' : 'Adicionar aos Favoritos' }}
+        <button class="card-favorites" @click="toggleFavorite(movie)">
+          {{
+            movieStore.state.favoritesMovies.some((fav) => fav.id === movie.id)
+              ? 'Remover dos Favoritos'
+              : 'Adicionar aos Favoritos'
+          }}
         </button>
       </div>
     </div>
@@ -81,16 +76,16 @@ function toggleFavorite (movie: IMovie) {
 }
 
 .card-image {
-    width: 150px;
-    height: auto;
-    margin-right: 20px;
-    cursor: pointer;
+  width: 150px;
+  height: auto;
+  margin-right: 20px;
+  cursor: pointer;
 }
 
 .card-title {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: white;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: white;
 }
 
 .card-favorites {
@@ -106,14 +101,13 @@ function toggleFavorite (movie: IMovie) {
 }
 
 p {
-    display: flex;
-    align-self: center;
-    gap: 4px;
+  display: flex;
+  align-self: center;
+  gap: 4px;
 }
 
 .card:hover {
   transform: scale(1.3);
   z-index: 99;
 }
-
 </style>
