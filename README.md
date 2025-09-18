@@ -21,7 +21,8 @@ Entre as funcionalidades principais, destacam-se:
 
 ## 🚀 Tecnologias Utilizadas
 - **Vue.js 3**  
-- **JavaScript**  
+- **JavaScript**
+- **TypeScript** 
 - **Pinia** (gerenciamento de estado)  
 - **CSS**  
 - **HTML**  
